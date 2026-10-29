@@ -10,7 +10,7 @@
 
 > **Note:** AppForge Labs is a fictional company. The analysis is real, the business scenario is a framing device.
 
-![Dashboard](docs/dashboard.png)
+![Dashboard](dashboard.png)
 
 ---
 
@@ -35,7 +35,7 @@ AppForge Labs is a hypothetical studio about to build its first iOS app. Leaders
 - 7,197 apps, 7,197 unique ids, one description per app.
 - **929 apps (12.9%) have no ratings**, and for them `user_rating = 0` means "no data", not "terrible". They are excluded from every rating average (6,268 rated apps remain) but kept for share-of-catalog counts.
 - Genres need at least 10 rated apps to be compared (this excludes *Catalogs*: 10 apps, 5 rated).
-- Full log in [`docs/provenance.md`](docs/provenance.md).
+- Full log in [`provenance.md`](provenance.md).
 
 ## 4. Executive summary
 
@@ -120,36 +120,32 @@ Pearson r = 0.11 (p < 0.001, n = 6,268); Spearman ρ = 0.08. The relationship is
 - **Small groups:** Finance paid apps (16), 31+ languages (158) and several genres have limited samples.
 - **Correlation is not strategy.** Localization and description length may be symptoms of well-funded teams.
 
-## 8. Repository structure
+## 8. Repository files
 
-```
-AppForge-iOS-Strategy/
-├── README.md
-├── requirements.txt
-├── data/
-│   └── raw/                  # put the two Kaggle CSVs here (not tracked in git)
-├── sql/
-│   └── analysis_queries.sql  # all SQL (paid vs free, languages, categories, descriptions, benchmarks)
-├── scripts/
-│   ├── build_db.py           # CSVs -> SQLite database
-│   ├── analysis_stats.py     # p-value, correlation, median cross-checks
-│   └── make_dashboard.py     # builds docs/dashboard.png
-└── docs/
-    ├── dashboard.png
-    └── provenance.md         # data checks and cleaning log
-```
+| File | What it is |
+|---|---|
+| `README.md` | This report |
+| `dashboard.png` | Summary dashboard |
+| `analysis_queries.sql` | All SQL: paid vs free, languages, categories, descriptions, benchmarks |
+| `build_db.py` | Loads the two Kaggle CSVs into a SQLite database |
+| `analysis_stats.py` | p-value, correlations and median cross-checks |
+| `make_dashboard.py` | Builds `dashboard.png` |
+| `provenance.md` | Data checks and cleaning log |
+| `requirements.txt` | Python packages needed |
 
 ## 9. How to reproduce
 
+1. Download the dataset from Kaggle and put `AppleStore.csv` and `appleStore_description.csv` in the same folder as these files.
+2. Run:
+
 ```bash
 pip install -r requirements.txt
-
-# 1. Place AppleStore.csv and appleStore_description.csv in data/raw/
-python scripts/build_db.py          # creates data/appforge.db
-sqlite3 data/appforge.db < sql/analysis_queries.sql   # needs SQLite 3.25+ (window functions)
-python scripts/analysis_stats.py    # p-value and correlations
-python scripts/make_dashboard.py    # regenerates docs/dashboard.png
+python build_db.py            # creates appforge.db
+python analysis_stats.py      # p-value and correlations
+python make_dashboard.py      # regenerates dashboard.png
 ```
+
+3. Open `appforge.db` in any SQLite tool (SQLite 3.25+ needed for window functions) and run the queries in `analysis_queries.sql` one at a time.
 
 ---
 
